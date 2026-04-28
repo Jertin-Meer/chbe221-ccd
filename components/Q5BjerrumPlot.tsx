@@ -109,15 +109,15 @@ export default function Q5BjerrumPlot() {
         Figure 3 &mdash; Bjerrum plot, pH 4–11
       </p>
       <div className="border border-gray-200 rounded p-2 mb-2">
-        <ResponsiveContainer width="100%" height={340}>
-          <LineChart data={data} margin={{ top: 8, right: 24, bottom: 38, left: 16 }}>
+        <ResponsiveContainer width="100%" height={360}>
+          <LineChart data={data} margin={{ top: 16, right: 24, bottom: 52, left: 16 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#d4d4d4" />
             <XAxis
               dataKey="pH"
               type="number"
               domain={[4, 11]}
               ticks={[4, 5, 6, 7, 8, 9, 10, 11]}
-              label={{ value: 'pH', position: 'insideBottom', offset: -22, fontSize: 12 }}
+              label={{ value: 'pH', position: 'insideBottom', offset: -36, fontSize: 12 }}
             />
             <YAxis
               domain={[0, 1]}
@@ -125,22 +125,27 @@ export default function Q5BjerrumPlot() {
               label={{ value: 'Alpha fraction', angle: -90, position: 'insideLeft', offset: 12, fontSize: 11 }}
             />
             <Tooltip content={<BjerrumTooltip />} />
-            <Legend verticalAlign="top" iconType="line" wrapperStyle={{ fontSize: 11 }} />
+            {/* Legend moved to bottom to avoid clashing with reference-line labels */}
+            <Legend
+              verticalAlign="bottom"
+              iconType="line"
+              wrapperStyle={{ fontSize: 11, paddingTop: 12 }}
+            />
 
-            {/* Highlighted pH lines */}
+            {/* Highlighted pH lines — labels inside the plot area, near the bottom */}
             <ReferenceLine x={PH_A} stroke="#555" strokeDasharray="6 3" strokeWidth={1.5}>
-              <Label value={`pH ${PH_A}`} position="top" fontSize={10} fill="#555" />
+              <Label value={`pH ${PH_A}`} position="insideBottomLeft" offset={4} fontSize={10} fill="#555" />
             </ReferenceLine>
             <ReferenceLine x={PH_B} stroke="#888" strokeDasharray="6 3" strokeWidth={1.5}>
-              <Label value={`pH ${PH_B}`} position="top" fontSize={10} fill="#888" />
+              <Label value={`pH ${PH_B}`} position="insideBottomRight" offset={4} fontSize={10} fill="#888" />
             </ReferenceLine>
 
-            {/* pKa crossover lines (faint) */}
+            {/* pKa crossover lines — labels anchored to top corners, away from center */}
             <ReferenceLine x={pKa1} stroke="#ccc" strokeDasharray="2 4" strokeWidth={1}>
-              <Label value={`pKa1=${pKa1.toFixed(1)}`} position="insideTopRight" fontSize={9} fill="#aaa" />
+              <Label value={`pKa1=${pKa1.toFixed(1)}`} position="insideTopRight" offset={4} fontSize={9} fill="#aaa" />
             </ReferenceLine>
             <ReferenceLine x={pKa2} stroke="#ccc" strokeDasharray="2 4" strokeWidth={1}>
-              <Label value={`pKa2=${pKa2.toFixed(1)}`} position="insideTopLeft" fontSize={9} fill="#aaa" />
+              <Label value={`pKa2=${pKa2.toFixed(1)}`} position="insideTopLeft" offset={4} fontSize={9} fill="#aaa" />
             </ReferenceLine>
 
             {/* alpha lines */}
