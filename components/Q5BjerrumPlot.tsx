@@ -140,12 +140,24 @@ export default function Q5BjerrumPlot() {
               <Label value={`pH ${PH_B}`} position="insideBottomRight" offset={4} fontSize={10} fill="#888" />
             </ReferenceLine>
 
-            {/* pKa crossover lines — labels anchored to top corners, away from center */}
-            <ReferenceLine x={pKa1} stroke="#ccc" strokeDasharray="2 4" strokeWidth={1}>
-              <Label value={`pKa1=${pKa1.toFixed(1)}`} position="insideTopRight" offset={4} fontSize={9} fill="#aaa" />
+            {/* pKa crossover lines — label shows which two species are equal here */}
+            <ReferenceLine x={pKa1} stroke="#999" strokeDasharray="4 3" strokeWidth={1.2}>
+              <Label
+                value={`pKa1=${pKa1.toFixed(1)}  α0=α1  (CO₂↔HCO₃⁻)`}
+                position="insideTopRight"
+                offset={6}
+                fontSize={9.5}
+                fill="#666"
+              />
             </ReferenceLine>
-            <ReferenceLine x={pKa2} stroke="#ccc" strokeDasharray="2 4" strokeWidth={1}>
-              <Label value={`pKa2=${pKa2.toFixed(1)}`} position="insideTopLeft" offset={4} fontSize={9} fill="#aaa" />
+            <ReferenceLine x={pKa2} stroke="#999" strokeDasharray="4 3" strokeWidth={1.2}>
+              <Label
+                value={`(α1=α2  HCO₃⁻↔CO₃²⁻)  pKa2=${pKa2.toFixed(1)}`}
+                position="insideTopLeft"
+                offset={6}
+                fontSize={9.5}
+                fill="#666"
+              />
             </ReferenceLine>
 
             {/* alpha lines */}
