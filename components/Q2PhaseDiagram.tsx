@@ -47,14 +47,13 @@ function buildSublim(): PhasePoint[] {
 }
 
 function buildFusion(): PhasePoint[] {
-  const pts: PhasePoint[] = []
-  // dP/dT = 45.7 atm/K → at 2000 atm, T ≈ −13 °C  (span of ~44 °C)
-  for (let i = 0; i <= 40; i++) {
-    const T = -56.6 + i * (43.6 / 40)
+  // dP/dT = 45.7 atm/K → at T = 50 °C, P ≈ 4877 atm
+  // Run from the triple point to the right edge of the X-axis (50 °C)
+  return Array.from({ length: 50 }, (_, i) => {
+    const T = -56.6 + i * (106.6 / 49)   // −56.6 °C → +50 °C in 50 steps
     const P = fusionP(T)
-    if (P <= 2000) pts.push({ T: parseFloat(T.toFixed(3)), P: parseFloat(P.toFixed(1)) })
-  }
-  return pts
+    return { T: parseFloat(T.toFixed(3)), P: parseFloat(P.toFixed(1)) }
+  }).filter(pt => pt.P <= 10000)
 }
 
 // ── Region labels rendered via Recharts Customized ───────────────────────────
@@ -68,10 +67,10 @@ function PhaseRegionLabels(props: any) {
 
   // [T_celsius, P_atm, label]
   const labels: [number, number, string][] = [
-    [ -90,   80,   'SOLID'          ],
-    [  10,  300,   'LIQUID'         ],
-    [ -20,   0.06, 'GAS'            ],
-    [  40,  800,   'SUPER-CRITICAL' ],
+    [ -90,  400,  'SOLID'          ],
+    [  10, 2000,  'LIQUID'         ],
+    [ -20,  0.06, 'GAS'            ],
+    [  38, 6000,  'SUPER-CRITICAL' ],
   ]
 
   return (
@@ -173,8 +172,8 @@ export default function Q2PhaseDiagram() {
               type="number"
               dataKey="P"
               scale="log"
-              domain={[0.002, 2000]}
-              ticks={[0.01, 0.1, 1, 10, 100, 1000]}
+              domain={[0.002, 10000]}
+              ticks={[0.01, 0.1, 1, 10, 100, 1000, 10000]}
               tickFormatter={(v: number) => v >= 1 ? v.toFixed(0) : v.toString()}
               label={{ value: 'Pressure (atm, log scale)', angle: -90, position: 'insideLeft', offset: 18, fontSize: 10 }}
             />
@@ -237,8 +236,9 @@ export default function Q2PhaseDiagram() {
         Log pressure axis. Region labels (SOLID / LIQUID / GAS / SUPER-CRITICAL) mark the four phase
         fields separated by the three boundary curves. The blue dot marks the dry-ice sublimation
         point (−78.5&nbsp;°C, 1&nbsp;atm). The fusion curve
-        (dP/dT&nbsp;≈&nbsp;+45.7&nbsp;atm/K) is plotted up to 2000&nbsp;atm,
-        spanning from the triple point to approximately −13&nbsp;°C.
+        (dP/dT&nbsp;≈&nbsp;+45.7&nbsp;atm/K) spans from the triple point to
+        the right edge of the chart (~50&nbsp;°C, ~4900&nbsp;atm);
+        the Y-axis extends to 10&nbsp;000&nbsp;atm to show it completely.
       </p>
 
       {/* Engineering notes */}
