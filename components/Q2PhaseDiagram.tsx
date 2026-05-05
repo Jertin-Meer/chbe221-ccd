@@ -48,10 +48,11 @@ function buildSublim(): PhasePoint[] {
 
 function buildFusion(): PhasePoint[] {
   const pts: PhasePoint[] = []
-  for (let i = 0; i <= 25; i++) {
-    const T = -56.6 + i * (4.6 / 25)
+  // dP/dT = 45.7 atm/K → at 2000 atm, T ≈ −13 °C  (span of ~44 °C)
+  for (let i = 0; i <= 40; i++) {
+    const T = -56.6 + i * (43.6 / 40)
     const P = fusionP(T)
-    if (P <= 200) pts.push({ T: parseFloat(T.toFixed(3)), P: parseFloat(P.toFixed(2)) })
+    if (P <= 2000) pts.push({ T: parseFloat(T.toFixed(3)), P: parseFloat(P.toFixed(1)) })
   }
   return pts
 }
@@ -67,10 +68,10 @@ function PhaseRegionLabels(props: any) {
 
   // [T_celsius, P_atm, label]
   const labels: [number, number, string][] = [
-    [ -90,   20,  'SOLID'          ],
-    [  -5,   30,  'LIQUID'         ],
-    [ -20,  0.06, 'GAS'            ],
-    [  40,  110,  'SUPER-CRITICAL' ],
+    [ -90,   80,   'SOLID'          ],
+    [  10,  300,   'LIQUID'         ],
+    [ -20,   0.06, 'GAS'            ],
+    [  40,  800,   'SUPER-CRITICAL' ],
   ]
 
   return (
@@ -172,8 +173,8 @@ export default function Q2PhaseDiagram() {
               type="number"
               dataKey="P"
               scale="log"
-              domain={[0.002, 200]}
-              ticks={[0.01, 0.1, 1, 10, 100]}
+              domain={[0.002, 2000]}
+              ticks={[0.01, 0.1, 1, 10, 100, 1000]}
               tickFormatter={(v: number) => v >= 1 ? v.toFixed(0) : v.toString()}
               label={{ value: 'Pressure (atm, log scale)', angle: -90, position: 'insideLeft', offset: 18, fontSize: 10 }}
             />
@@ -235,8 +236,9 @@ export default function Q2PhaseDiagram() {
       <p className="text-xs text-gray-500 italic mb-8">
         Log pressure axis. Region labels (SOLID / LIQUID / GAS / SUPER-CRITICAL) mark the four phase
         fields separated by the three boundary curves. The blue dot marks the dry-ice sublimation
-        point (−78.5&nbsp;°C, 1&nbsp;atm). The fusion curve is nearly vertical on this scale
-        (dP/dT&nbsp;≈&nbsp;+45.7&nbsp;atm/K) and is plotted up to 200&nbsp;atm.
+        point (−78.5&nbsp;°C, 1&nbsp;atm). The fusion curve
+        (dP/dT&nbsp;≈&nbsp;+45.7&nbsp;atm/K) is plotted up to 2000&nbsp;atm,
+        spanning from the triple point to approximately −13&nbsp;°C.
       </p>
 
       {/* Engineering notes */}
