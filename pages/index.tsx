@@ -1,17 +1,63 @@
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
+import { useState } from 'react'
 
 // Dynamic imports avoid SSR issues with Recharts (browser canvas APIs)
-const Q3HenrysLaw   = dynamic(() => import('../components/Q3HenrysLaw'),   { ssr: false })
-const Q4Equilibrium = dynamic(() => import('../components/Q4Equilibrium'),  { ssr: false })
-const Q5BjerrumPlot = dynamic(() => import('../components/Q5BjerrumPlot'),  { ssr: false })
+const Q1CarbonCycle  = dynamic(() => import('../components/Q1CarbonCycle'),  { ssr: false })
+const Q2PhaseDiagram = dynamic(() => import('../components/Q2PhaseDiagram'), { ssr: false })
+const Q3HenrysLaw   = dynamic(() => import('../components/Q3HenrysLaw'),    { ssr: false })
+const Q4Equilibrium = dynamic(() => import('../components/Q4Equilibrium'),   { ssr: false })
+const Q5BjerrumPlot = dynamic(() => import('../components/Q5BjerrumPlot'),   { ssr: false })
+const Q6OceanCarbon = dynamic(() => import('../components/Q6OceanCarbon'),   { ssr: false })
 
 const NAV = [
+  { href: '#q1',   label: 'Q1 · Carbon Cycle'           },
+  { href: '#q2',   label: 'Q2 · Phase Diagram'           },
   { href: '#q3',   label: 'Q3 · Henry\'s Law'           },
   { href: '#q4',   label: 'Q4 · CO₂–Water Equilibrium'  },
   { href: '#q5',   label: 'Q5 · Bjerrum Plot'            },
+  { href: '#q6',   label: 'Q6 · Ocean Carbon'            },
   { href: '#refs', label: 'References'                    },
 ]
+
+function DownloadButton() {
+  const [status, setStatus] = useState<'idle' | 'busy' | 'done' | 'error'>('idle')
+
+  async function handleClick() {
+    setStatus('busy')
+    try {
+      const { exportToDocx } = await import('../lib/exportDocx')
+      await exportToDocx()
+      setStatus('done')
+      setTimeout(() => setStatus('idle'), 3000)
+    } catch {
+      setStatus('error')
+      setTimeout(() => setStatus('idle'), 3000)
+    }
+  }
+
+  const label =
+    status === 'busy'  ? 'Generating…' :
+    status === 'done'  ? 'Downloaded ✓' :
+    status === 'error' ? 'Error — retry' :
+    'Download Word Document'
+
+  return (
+    <button
+      onClick={handleClick}
+      disabled={status === 'busy'}
+      className={[
+        'px-4 py-1.5 text-xs font-semibold border rounded transition-colors print:hidden',
+        status === 'done'  ? 'bg-green-50 border-green-400 text-green-700' :
+        status === 'error' ? 'bg-red-50  border-red-400  text-red-700'    :
+        status === 'busy'  ? 'bg-gray-100 border-gray-300 text-gray-400 cursor-not-allowed' :
+        'bg-white border-gray-400 text-gray-700 hover:bg-gray-50',
+      ].join(' ')}
+    >
+      {label}
+    </button>
+  )
+}
 
 export default function Home() {
   return (
@@ -35,6 +81,9 @@ export default function Home() {
               {l.label}
             </a>
           ))}
+          <span className="ml-auto shrink-0">
+            <DownloadButton />
+          </span>
         </div>
       </nav>
 
@@ -49,20 +98,29 @@ export default function Home() {
             CO&#x2082; Absorption, Henry&rsquo;s Law,
             and Carbonate Equilibrium
           </h1>
-          <p className="text-base text-gray-600 mb-1">
-            Questions 3, 4, and 5 — numerical results, derivations,
-            and engineering interpretation
+          <p className="text-base text-gray-600 mb-3">
+            Questions 1–6 — carbon cycle, phase behaviour, solubility,
+            speciation, and ocean carbon chemistry
           </p>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-400 mb-4">
             Calculations use Appendix A correlations (Weiss 1974; Benson &amp; Krause 1980)
             and standard thermodynamic equilibrium constants at 25&nbsp;°C.
           </p>
+          <div className="print:hidden">
+            <DownloadButton />
+            <span className="text-xs text-gray-400 ml-3">
+              Captures all charts + tables as a Word document
+            </span>
+          </div>
         </header>
 
         {/* ── Question sections ───────────────────────────────────────────── */}
+        <Q1CarbonCycle />
+        <Q2PhaseDiagram />
         <Q3HenrysLaw />
         <Q4Equilibrium />
         <Q5BjerrumPlot />
+        <Q6OceanCarbon />
 
         {/* ── References ─────────────────────────────────────────────────── */}
         <section id="refs" className="border-t border-gray-300 pt-8 mb-12">
@@ -94,10 +152,24 @@ export default function Home() {
               (version&nbsp;4.0) for water as solvent.{' '}
               <em>Atmospheric Chemistry and Physics</em>, 15, 4399–4981.
             </li>
+            <li>
+              NIST Chemistry WebBook (2023). Thermophysical properties of CO&#x2082;.
+              National Institute of Standards and Technology.
+            </li>
+            <li>
+              Zeebe, R.&thinsp;E. &amp; Wolf-Gladrow, D. (2001).{' '}
+              <em>CO&#x2082; in Seawater: Equilibrium, Kinetics, Isotopes</em>.
+              Elsevier Oceanography Series 65.
+            </li>
           </ol>
         </section>
 
-        <footer className="text-xs text-gray-400 text-center pb-8">
+        {/* ── Bottom download ─────────────────────────────────────────────── */}
+        <div className="flex justify-center pb-4 print:hidden">
+          <DownloadButton />
+        </div>
+
+        <footer className="text-xs text-gray-400 text-center pb-8 mt-2">
           CHBE 221 CCD Project · University of Illinois Urbana–Champaign
         </footer>
       </main>

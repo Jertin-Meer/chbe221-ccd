@@ -184,18 +184,22 @@ export default function Q3HenrysLaw() {
       {/* Solubility curves */}
       <p className="font-semibold text-sm mb-3">Solubility Curves</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-        <SolubilityChart
-          data={co2Data}
-          title="CO&#x2082; in fresh water"
-          yLabel="x_CO2 × 10⁻³ (mol/mol)"
-          fig="Figure 1"
-        />
-        <SolubilityChart
-          data={o2Data}
-          title="O&#x2082; in fresh water"
-          yLabel="x_O2 × 10⁻⁵ (mol/mol)"
-          fig="Figure 2"
-        />
+        <div id="chart-co2-solubility">
+          <SolubilityChart
+            data={co2Data}
+            title="CO&#x2082; in fresh water"
+            yLabel="x_CO2 × 10⁻³ (mol/mol)"
+            fig="Figure 1"
+          />
+        </div>
+        <div id="chart-o2-solubility">
+          <SolubilityChart
+            data={o2Data}
+            title="O&#x2082; in fresh water"
+            yLabel="x_O2 × 10⁻⁵ (mol/mol)"
+            fig="Figure 2"
+          />
+        </div>
       </div>
       <p className="text-xs text-gray-500 italic mb-8 -mt-6">
         CO&#x2082; is ~35× more soluble than O&#x2082; at every temperature shown; both gases

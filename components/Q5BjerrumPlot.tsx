@@ -108,7 +108,7 @@ export default function Q5BjerrumPlot() {
       <p className="font-semibold text-sm mb-2">
         Figure 3 &mdash; Bjerrum plot, pH 4–11
       </p>
-      <div className="border border-gray-200 rounded p-2 mb-2">
+      <div id="chart-bjerrum" className="border border-gray-200 rounded p-2 mb-2">
         <ResponsiveContainer width="100%" height={360}>
           <LineChart data={data} margin={{ top: 16, right: 24, bottom: 52, left: 16 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#d4d4d4" />
